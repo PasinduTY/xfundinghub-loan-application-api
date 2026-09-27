@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="XFundingHub.Api/XFundingHub.Api.csproj" />
+  <Project Path="XFundingHub.Application/XFundingHub.Application.csproj" />
+  <Project Path="XFundingHub.Domain/XFundingHub.Domain.csproj" />
+  <Project Path="XFundingHub.Infrastructure/XFundingHub.Infrastructure.csproj" />
+  <Project Path="XFundingHub.IntegrationTests/XFundingHub.IntegrationTests.csproj" />
+  <Project Path="XFundingHub.UnitTests/XFundingHub.UnitTests.csproj" />
+</Solution>

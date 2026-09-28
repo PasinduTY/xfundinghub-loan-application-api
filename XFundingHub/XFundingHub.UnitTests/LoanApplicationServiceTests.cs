@@ -6,7 +6,7 @@ namespace XFundingHub.UnitTests;
 public class LoanApplicationServiceTests
 {
     [Fact]
-    public void Create_ShouldGenerateApplicationId()
+    public async Task Create_ShouldGenerateApplicationId()
     {
         // Arrange
         var idGenerator = new ApplicationIdGenerator();
@@ -17,7 +17,7 @@ public class LoanApplicationServiceTests
             repository);
 
         // Act
-        var application = service.Create(
+        var application = await service.CreateAsync(
             "C1001",
             10000m,
             "GBP",
@@ -28,7 +28,7 @@ public class LoanApplicationServiceTests
     }
 
     [Fact]
-    public void Create_ShouldGenerateIncrementingApplicationIds()
+    public async Task Create_ShouldGenerateIncrementingApplicationIds()
     {
         // Arrange
         var idGenerator = new ApplicationIdGenerator();
@@ -39,13 +39,13 @@ public class LoanApplicationServiceTests
             repository);
 
         // Act
-        var firstApplication = service.Create(
+        var firstApplication = await service.CreateAsync(
             "C1001",
             10000m,
             "GBP",
             12);
 
-        var secondApplication = service.Create(
+        var secondApplication = await service.CreateAsync(
             "C1002",
             20000m,
             "GBP",
@@ -57,7 +57,7 @@ public class LoanApplicationServiceTests
     }
 
     [Fact]
-    public void Create_ShouldSaveLoanApplication()
+    public async Task Create_ShouldSaveLoanApplication()
     {
         // Arrange
         var idGenerator = new ApplicationIdGenerator();
@@ -68,21 +68,24 @@ public class LoanApplicationServiceTests
             repository);
 
         // Act
-        var application = service.Create(
+        var application = await service.CreateAsync(
             "C1001",
             10000m,
             "GBP",
             12);
 
         // Assert
-        var savedApplication = repository.GetById(application.ApplicationId);
+        var savedApplication = await repository.GetByIdAsync(
+            application.ApplicationId);
 
         Assert.NotNull(savedApplication);
-        Assert.Equal(application.ApplicationId, savedApplication.ApplicationId);
+        Assert.Equal(
+            application.ApplicationId,
+            savedApplication.ApplicationId);
     }
 
     [Fact]
-    public void Create_WithInvalidAmount_ShouldNotSaveApplication()
+    public async Task Create_WithInvalidAmount_ShouldNotSaveApplication()
     {
         // Arrange
         var idGenerator = new ApplicationIdGenerator();
@@ -93,15 +96,15 @@ public class LoanApplicationServiceTests
             repository);
 
         // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-            service.Create(
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+            async () => await service.CreateAsync(
                 "C1001",
                 5000m,
                 "GBP",
                 12));
 
         // Assert
-        var savedApplication = repository.GetById("LA1001");
+        var savedApplication = await repository.GetByIdAsync("LA1001");
 
         Assert.Null(savedApplication);
     }

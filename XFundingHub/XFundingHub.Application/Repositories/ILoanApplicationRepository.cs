@@ -4,7 +4,7 @@ namespace XFundingHub.Application.Repositories;
 
 public interface ILoanApplicationRepository
 {
-    void Add(LoanApplication application);
+    Task AddAsync(LoanApplication application);
 
-    LoanApplication? GetById(string applicationId);
+    Task<LoanApplication?> GetByIdAsync(string applicationId);
 }

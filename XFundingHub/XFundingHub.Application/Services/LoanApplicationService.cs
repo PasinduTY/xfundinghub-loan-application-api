@@ -16,11 +16,11 @@ public class LoanApplicationService
         _repository = repository;
     }
 
-    public LoanApplication Create(
-    string customerId,
-    decimal amount,
-    string currency,
-    int termMonths)
+    public async Task<LoanApplication> CreateAsync(
+        string customerId,
+        decimal amount,
+        string currency,
+        int termMonths)
     {
         var applicationId = _idGenerator.Generate();
 
@@ -31,7 +31,7 @@ public class LoanApplicationService
             currency,
             termMonths);
 
-        _repository.Add(application);
+        await _repository.AddAsync(application);
 
         return application;
     }

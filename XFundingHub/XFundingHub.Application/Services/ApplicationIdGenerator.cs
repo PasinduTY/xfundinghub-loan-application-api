@@ -1,4 +1,4 @@
-﻿namespace XFundingHub.Domain.Services;
+﻿namespace XFundingHub.Application.Services;
 
 public class ApplicationIdGenerator
 {

@@ -1,4 +1,4 @@
-﻿using XFundingHub.Domain.Services;
+﻿using XFundingHub.Application.Services;
 
 public class ApplicationIdGeneratorTests
 {

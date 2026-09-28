@@ -31,7 +31,7 @@ public class LoanApplicationTests
         var application = new LoanApplication(
             "LA1001",
             "C1001",
-            5000m,
+            10000m,
             "GBP",
             12);
 
@@ -236,4 +236,139 @@ public class LoanApplicationTests
         Assert.Equal(ApplicationStatus.UnderReview, exception.CurrentStatus);
         Assert.Equal(ApplicationStatus.Disbursed, exception.RequestedStatus);
     }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void CreateLoanApplication_WithEmptyCustomerId_ShouldThrowArgumentException(
+    string customerId)
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() =>
+            new LoanApplication(
+                "LA1001",
+                customerId,
+                10000m,
+                "GBP",
+                12));
+    }
+
+    [Theory]
+    [InlineData(9999)]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void CreateLoanApplication_WithAmountBelowMinimum_ShouldThrowArgumentOutOfRangeException(
+    decimal amount)
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new LoanApplication(
+                "LA1001",
+                "C1001",
+                amount,
+                "GBP",
+                12));
+    }
+
+    [Fact]
+    public void CreateLoanApplication_WithMinimumAmount_ShouldCreateSuccessfully()
+    {
+        // Act
+        var application = new LoanApplication(
+            "LA1001",
+            "C1001",
+            10000m,
+            "GBP",
+            12);
+
+        // Assert
+        Assert.Equal(10000m, application.Amount);
+    }
+
+    [Theory]
+    [InlineData(11)]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void CreateLoanApplication_WithTermMonthsBelowMinimum_ShouldThrowArgumentOutOfRangeException(
+    int termMonths)
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new LoanApplication(
+                "LA1001",
+                "C1001",
+                10000m,
+                "GBP",
+                termMonths));
+    }
+
+    [Fact]
+    public void CreateLoanApplication_WithMinimumTermMonths_ShouldCreateSuccessfully()
+    {
+        // Act
+        var application = new LoanApplication(
+            "LA1001",
+            "C1001",
+            10000m,
+            "GBP",
+            12);
+
+        // Assert
+        Assert.Equal(12, application.TermMonths);
+    }
+
+    [Fact]
+    public void CreateLoanApplication_WithLargeTermMonths_ShouldCreateSuccessfully()
+    {
+        // Act
+        var application = new LoanApplication(
+            "LA1001",
+            "C1001",
+            10000m,
+            "GBP",
+            120);
+
+        // Assert
+        Assert.Equal(120, application.TermMonths);
+    }
+
+    [Theory]
+    [InlineData("GBP")]
+    [InlineData("gbp")]
+    public void CreateLoanApplication_WithSupportedCurrency_ShouldCreateSuccessfully(
+    string currency)
+    {
+        // Act
+        var application = new LoanApplication(
+            "LA1001",
+            "C1001",
+            10000m,
+            currency,
+            12);
+
+        // Assert
+        Assert.Equal(currency, application.Currency);
+    }
+
+    [Theory]
+    [InlineData("Gbp")]
+    [InlineData("gBp")]
+    [InlineData("GbP")]
+    [InlineData("USD")]
+    [InlineData("EUR")]
+    [InlineData("")]
+    public void CreateLoanApplication_WithUnsupportedCurrency_ShouldThrowArgumentException(
+    string currency)
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() =>
+            new LoanApplication(
+                "LA1001",
+                "C1001",
+                10000m,
+                currency,
+                12));
+    }
+
+    
 }

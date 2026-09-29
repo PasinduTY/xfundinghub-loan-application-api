@@ -66,6 +66,10 @@ public class LoanApplicationsControllerTests
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var body = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("Amount must be at least 10000", body);
     }
 
     [Fact]
@@ -87,6 +91,10 @@ public class LoanApplicationsControllerTests
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var body = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("Term months must be at least", body);
     }
 
     [Fact]
@@ -108,6 +116,10 @@ public class LoanApplicationsControllerTests
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var body = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("Currency must be GBP", body);
     }
 
     [Fact]
@@ -129,6 +141,10 @@ public class LoanApplicationsControllerTests
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var body = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("Customer ID cannot be empty", body);
     }
 
     [Fact]
@@ -169,6 +185,11 @@ public class LoanApplicationsControllerTests
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+        var body = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("LA999999", body);
+        Assert.Contains("not found", body);
     }
 
     [Fact]
@@ -366,6 +387,11 @@ public class LoanApplicationsControllerTests
 
         // Assert
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+
+        var body = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("Submitted", body);
+        Assert.Contains("Approved", body);
     }
 
     [Fact]
@@ -400,6 +426,11 @@ public class LoanApplicationsControllerTests
 
         // Assert
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+
+        var body = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("UnderReview", body);
+        Assert.Contains("Disbursed", body);
     }
 
     [Fact]
@@ -412,6 +443,11 @@ public class LoanApplicationsControllerTests
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+        var body = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("LA999999", body);
+        Assert.Contains("not found", body);
     }
 
     [Fact]
@@ -442,5 +478,10 @@ public class LoanApplicationsControllerTests
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var body = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("Unsupported status", body);
+        Assert.Contains("INVALID_STATUS", body);
     }
 }

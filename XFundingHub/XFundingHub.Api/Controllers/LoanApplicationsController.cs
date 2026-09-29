@@ -37,13 +37,19 @@ public class LoanApplicationsController : ControllerBase
                 new { applicationId = application.ApplicationId },
                 response);
         }
-        catch (ArgumentOutOfRangeException)
+        catch (ArgumentOutOfRangeException ex)
         {
-            return BadRequest();
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
         }
-        catch (ArgumentException)
+        catch (ArgumentException ex)
         {
-            return BadRequest();
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
         }
     }
 
@@ -53,8 +59,11 @@ public class LoanApplicationsController : ControllerBase
         var application = await _service.GetByIdAsync(applicationId);
 
         if (application is null)
-        {
-            return NotFound();
+{
+            return NotFound(new
+            {
+                message = $"Loan application '{applicationId}' was not found."
+            });
         }
 
         return Ok(ToResponse(application));
@@ -66,11 +75,14 @@ public class LoanApplicationsController : ControllerBase
         [FromBody] ChangeLoanApplicationStatusRequest request)
     {
         if (!Enum.TryParse<ApplicationStatus>(
-                request.Status.Replace("_", ""),
-                true,
-                out var newStatus))
+        request.Status.Replace("_", ""),
+        true,
+        out var newStatus))
         {
-            return BadRequest();
+            return BadRequest(new
+            {
+                message = $"Unsupported status '{request.Status}'."
+            });
         }
 
         try
@@ -81,14 +93,20 @@ public class LoanApplicationsController : ControllerBase
 
             if (application is null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    message = $"Loan application '{applicationId}' was not found."
+                });
             }
 
             return Ok(ToResponse(application));
         }
-        catch (InvalidStatusTransitionException)
+        catch (InvalidStatusTransitionException ex)
         {
-            return Conflict();
+            return Conflict(new
+            {
+                message = ex.Message
+            });
         }
     }
 

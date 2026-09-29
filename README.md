@@ -120,6 +120,20 @@ The default development configuration uses SQL Server LocalDB:
 
 Update the connection string if a different SQL Server instance is being used.
 
+### Database Migrations
+
+The repository includes Entity Framework Core migrations.
+
+From the solution root, run:
+
+```bash
+dotnet ef database update --project XFundingHub.Infrastructure --startup-project XFundingHub.API
+```
+
+This creates or updates the `XFundingHubDb` database using the existing migrations.
+
+Each developer can create their own local database. The database itself does not need to be committed to the repository.
+
 ## Running the API
 
 Navigate to the API project:

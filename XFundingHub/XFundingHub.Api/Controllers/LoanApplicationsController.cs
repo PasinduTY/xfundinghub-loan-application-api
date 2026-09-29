@@ -13,6 +13,18 @@ public class LoanApplicationsController : ControllerBase
 {
     private readonly LoanApplicationService _service;
 
+    private static readonly IReadOnlyDictionary<string, ApplicationStatus>
+    StatusMappings =
+        new Dictionary<string, ApplicationStatus>(
+            StringComparer.Ordinal)
+        {
+            ["SUBMITTED"] = ApplicationStatus.Submitted,
+            ["UNDER_REVIEW"] = ApplicationStatus.UnderReview,
+            ["APPROVED"] = ApplicationStatus.Approved,
+            ["REJECTED"] = ApplicationStatus.Rejected,
+            ["DISBURSED"] = ApplicationStatus.Disbursed
+        };
+
     public LoanApplicationsController(LoanApplicationService service)
     {
         _service = service;
@@ -128,16 +140,4 @@ public class LoanApplicationsController : ControllerBase
             }
         };
     }
-
-    private static readonly IReadOnlyDictionary<string, ApplicationStatus>
-    StatusMappings =
-        new Dictionary<string, ApplicationStatus>(
-            StringComparer.Ordinal)
-        {
-            ["SUBMITTED"] = ApplicationStatus.Submitted,
-            ["UNDER_REVIEW"] = ApplicationStatus.UnderReview,
-            ["APPROVED"] = ApplicationStatus.Approved,
-            ["REJECTED"] = ApplicationStatus.Rejected,
-            ["DISBURSED"] = ApplicationStatus.Disbursed
-        };
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XFundingHub.Application.DTOs;
 using XFundingHub.Application.Services;
+using XFundingHub.Domain.Entities;
 using XFundingHub.Domain.Enums;
 using XFundingHub.Domain.Exceptions;
 
@@ -19,7 +20,7 @@ public class LoanApplicationsController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> Create(
-    [FromBody] CreateLoanApplicationRequest request)
+        [FromBody] CreateLoanApplicationRequest request)
     {
         try
         {
@@ -29,15 +30,7 @@ public class LoanApplicationsController : ControllerBase
                 request.Currency,
                 request.TermMonths);
 
-            var response = new LoanApplicationResponse
-            {
-                ApplicationId = application.ApplicationId,
-                CustomerId = application.CustomerId,
-                Amount = application.Amount,
-                Currency = application.Currency,
-                TermMonths = application.TermMonths,
-                Status = application.Status.ToString().ToUpperInvariant()
-            };
+            var response = ToResponse(application);
 
             return CreatedAtAction(
                 nameof(GetById),
@@ -64,28 +57,18 @@ public class LoanApplicationsController : ControllerBase
             return NotFound();
         }
 
-        var response = new LoanApplicationResponse
-        {
-            ApplicationId = application.ApplicationId,
-            CustomerId = application.CustomerId,
-            Amount = application.Amount,
-            Currency = application.Currency,
-            TermMonths = application.TermMonths,
-            Status = application.Status.ToString().ToUpperInvariant()
-        };
-
-        return Ok(response);
+        return Ok(ToResponse(application));
     }
 
     [HttpPatch("{applicationId}/status")]
     public async Task<IActionResult> ChangeStatus(
-    string applicationId,
-    [FromBody] ChangeLoanApplicationStatusRequest request)
+        string applicationId,
+        [FromBody] ChangeLoanApplicationStatusRequest request)
     {
         if (!Enum.TryParse<ApplicationStatus>(
-        request.Status.Replace("_", ""),
-        true,
-        out var newStatus))
+                request.Status.Replace("_", ""),
+                true,
+                out var newStatus))
         {
             return BadRequest();
         }
@@ -101,29 +84,33 @@ public class LoanApplicationsController : ControllerBase
                 return NotFound();
             }
 
-            var response = new LoanApplicationResponse
-            {
-                ApplicationId = application.ApplicationId,
-                CustomerId = application.CustomerId,
-                Amount = application.Amount,
-                Currency = application.Currency,
-                TermMonths = application.TermMonths,
-                Status = application.Status switch
-                {
-                    ApplicationStatus.Submitted => "SUBMITTED",
-                    ApplicationStatus.UnderReview => "UNDER_REVIEW",
-                    ApplicationStatus.Approved => "APPROVED",
-                    ApplicationStatus.Rejected => "REJECTED",
-                    ApplicationStatus.Disbursed => "DISBURSED",
-                    _ => application.Status.ToString().ToUpperInvariant()
-                }
-            };
-
-            return Ok(response);
+            return Ok(ToResponse(application));
         }
         catch (InvalidStatusTransitionException)
         {
             return Conflict();
         }
+    }
+
+    private static LoanApplicationResponse ToResponse(
+        LoanApplication application)
+    {
+        return new LoanApplicationResponse
+        {
+            ApplicationId = application.ApplicationId,
+            CustomerId = application.CustomerId,
+            Amount = application.Amount,
+            Currency = application.Currency,
+            TermMonths = application.TermMonths,
+            Status = application.Status switch
+            {
+                ApplicationStatus.Submitted => "SUBMITTED",
+                ApplicationStatus.UnderReview => "UNDER_REVIEW",
+                ApplicationStatus.Approved => "APPROVED",
+                ApplicationStatus.Rejected => "REJECTED",
+                ApplicationStatus.Disbursed => "DISBURSED",
+                _ => application.Status.ToString().ToUpperInvariant()
+            }
+        };
     }
 }

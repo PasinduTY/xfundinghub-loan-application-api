@@ -6,7 +6,7 @@ namespace XFundingHub.UnitTests;
 public class LoanApplicationServiceTests
 {
     [Fact]
-    public async Task Create_ShouldGenerateApplicationId()
+    public async Task CreateAsync_ShouldGenerateApplicationId()
     {
         // Arrange
         var idGenerator = new ApplicationIdGenerator();
@@ -28,7 +28,7 @@ public class LoanApplicationServiceTests
     }
 
     [Fact]
-    public async Task Create_ShouldGenerateIncrementingApplicationIds()
+    public async Task CreateAsync_ShouldGenerateIncrementingApplicationIds()
     {
         // Arrange
         var idGenerator = new ApplicationIdGenerator();
@@ -57,7 +57,7 @@ public class LoanApplicationServiceTests
     }
 
     [Fact]
-    public async Task Create_ShouldSaveLoanApplication()
+    public async Task CreateAsync_ShouldSaveLoanApplication()
     {
         // Arrange
         var idGenerator = new ApplicationIdGenerator();
@@ -85,7 +85,7 @@ public class LoanApplicationServiceTests
     }
 
     [Fact]
-    public async Task Create_WithInvalidAmount_ShouldNotSaveApplication()
+    public async Task CreateAsync_WithInvalidAmount_ShouldNotSaveApplication()
     {
         // Arrange
         var idGenerator = new ApplicationIdGenerator();
@@ -96,15 +96,16 @@ public class LoanApplicationServiceTests
             repository);
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
-            async () => await service.CreateAsync(
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+            service.CreateAsync(
                 "C1001",
                 5000m,
                 "GBP",
                 12));
 
         // Assert
-        var savedApplication = await repository.GetByIdAsync("LA1001");
+        var savedApplication =
+            await repository.GetByIdAsync("LA1001");
 
         Assert.Null(savedApplication);
     }

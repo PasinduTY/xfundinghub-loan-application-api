@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\XFundingHub.Application\XFundingHub.Application.csproj" />
     <ProjectReference Include="..\XFundingHub.Infrastructure\XFundingHub.Infrastructure.csproj" />
   </ItemGroup>

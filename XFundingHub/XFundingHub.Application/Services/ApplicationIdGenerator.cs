@@ -2,10 +2,8 @@
 
 public class ApplicationIdGenerator
 {
-    private int _nextId = 1001;
-
-    public string Generate()
+    public string Generate(int applicationNumber)
     {
-        return $"LA{_nextId++}";
+        return $"LA{applicationNumber}";
     }
 }

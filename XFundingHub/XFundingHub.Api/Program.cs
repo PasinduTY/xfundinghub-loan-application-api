@@ -21,7 +21,7 @@ builder.Services.AddScoped<
     ILoanApplicationRepository,
     LoanApplicationRepository>();
 
-builder.Services.AddSingleton<ApplicationIdGenerator>();
+builder.Services.AddScoped<ApplicationIdGenerator>();
 
 builder.Services.AddScoped<LoanApplicationService>();
 
@@ -40,3 +40,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program
+{
+}

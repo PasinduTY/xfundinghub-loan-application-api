@@ -484,4 +484,64 @@ public class LoanApplicationsControllerTests
         Assert.Contains("Unsupported status", body);
         Assert.Contains("INVALID_STATUS", body);
     }
+
+    [Fact]
+    public async Task ChangeStatus_WithInvalidStatusFormat_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var createRequest = new
+        {
+            customerId = "C4008",
+            amount = 10000m,
+            currency = "GBP",
+            termMonths = 12
+        };
+
+        var createResponse = await _client.PostAsJsonAsync(
+            "/api/v1/loan-applications",
+            createRequest);
+
+        var createdApplication =
+            await createResponse.Content.ReadFromJsonAsync<LoanApplicationResponse>();
+
+        Assert.NotNull(createdApplication);
+
+        // Act
+        var response = await _client.PatchAsJsonAsync(
+            $"/api/v1/loan-applications/{createdApplication.ApplicationId}/status",
+            new { status = "underreview" });
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task ChangeStatus_WithUndefinedNumericStatus_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var createRequest = new
+        {
+            customerId = "C4009",
+            amount = 10000m,
+            currency = "GBP",
+            termMonths = 12
+        };
+
+        var createResponse = await _client.PostAsJsonAsync(
+            "/api/v1/loan-applications",
+            createRequest);
+
+        var createdApplication =
+            await createResponse.Content.ReadFromJsonAsync<LoanApplicationResponse>();
+
+        Assert.NotNull(createdApplication);
+
+        // Act
+        var response = await _client.PatchAsJsonAsync(
+            $"/api/v1/loan-applications/{createdApplication.ApplicationId}/status",
+            new { status = "99" });
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
 }

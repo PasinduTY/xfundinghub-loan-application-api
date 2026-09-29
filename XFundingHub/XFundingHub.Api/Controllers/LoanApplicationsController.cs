@@ -59,7 +59,7 @@ public class LoanApplicationsController : ControllerBase
         var application = await _service.GetByIdAsync(applicationId);
 
         if (application is null)
-{
+        {
             return NotFound(new
             {
                 message = $"Loan application '{applicationId}' was not found."
@@ -74,10 +74,7 @@ public class LoanApplicationsController : ControllerBase
         string applicationId,
         [FromBody] ChangeLoanApplicationStatusRequest request)
     {
-        if (!Enum.TryParse<ApplicationStatus>(
-        request.Status.Replace("_", ""),
-        true,
-        out var newStatus))
+        if (!StatusMappings.TryGetValue(request.Status, out var newStatus))
         {
             return BadRequest(new
             {
@@ -131,4 +128,16 @@ public class LoanApplicationsController : ControllerBase
             }
         };
     }
+
+    private static readonly IReadOnlyDictionary<string, ApplicationStatus>
+    StatusMappings =
+        new Dictionary<string, ApplicationStatus>(
+            StringComparer.Ordinal)
+        {
+            ["SUBMITTED"] = ApplicationStatus.Submitted,
+            ["UNDER_REVIEW"] = ApplicationStatus.UnderReview,
+            ["APPROVED"] = ApplicationStatus.Approved,
+            ["REJECTED"] = ApplicationStatus.Rejected,
+            ["DISBURSED"] = ApplicationStatus.Disbursed
+        };
 }
